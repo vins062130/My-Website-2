@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Class Login</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(to right, #004e92, #000428);
+      color: white;
+      text-align: center;
+      padding-top: 100px;
+    }
+
+    .login-box {
+      background: white;
+      color: black;
+      padding: 30px;
+      width: 300px;
+      margin: auto;
+      border-radius: 10px;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    button {
+      padding: 10px;
+      width: 100%;
+      background: #004e92;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>Class Login</h2>
+  <input type="text" id="username" placeholder="Username"><br>
+  <input type="password" id="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<script>
+function login() {
+  let user = document.getElementById("username").value;
+  let pass = document.getElementById("password").value;
+
+  // TEACHER LOGIN
+  if(user === "teacher" && pass === "admin") {
+    localStorage.setItem("role", "teacher");
+    window.location.href = "home.html";
+  }
+
+  // STUDENT LOGIN
+  else if(user === "student" && pass === "1234") {
+    localStorage.setItem("role", "student");
+    window.location.href = "home.html";
+  }
+
+  else {
+    document.getElementById("error").innerText = "Invalid login!";
+  }
+}
+
+
+
+// Show teacher panel if teacher
+let role = localStorage.getItem("role");
+if(role === "teacher") {
+  document.getElementById("teacherPanel").style.display = "block";
+}
+
+// Load announcements
+function loadAnnouncements() {
+  let list = document.getElementById("announcementList");
+  list.innerHTML = "";
+
+  let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+
+  announcements.forEach(a => {
+    list.innerHTML += `
+      <div class="announcement-box">
+        <h3>${a.title}</h3>
+        <p>${a.content}</p>
+      </div>
+    `;
+  });
+}
+
+// Post announcement (teacher only)
+function postAnnouncement() {
+  let title = document.getElementById("title").value;
+  let content = document.getElementById("content").value;
+
+  let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+
+  announcements.unshift({title, content});
+
+  localStorage.setItem("announcements", JSON.stringify(announcements));
+
+  loadAnnouncements();
+}
+
+// Load on start
+loadAnnouncements();
+
+
+</script>
+
+</body>
+</html>

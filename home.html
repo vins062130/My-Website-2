@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Class Portal</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+    }
+
+    /* Navbar */
+    nav {
+      background: #002147;
+      padding: 15px;
+    }
+
+    nav a {
+      color: white;
+      margin: 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    header {
+      background: url('https://picsum.photos/1200/400');
+      color: white;
+      text-align: center;
+      padding: 100px 20px;
+    }
+
+    /* 2 COLUMN LAYOUT */
+    .container {
+      display: flex;
+      padding: 40px;
+      gap: 30px;
+    }
+
+    .left, .right {
+      flex: 1;
+    }
+
+    /* SUBJECT BUTTONS */
+    .subject-btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      background: #004e92;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+
+    .subject-btn:hover {
+      background: #003366;
+    }
+
+    /* ANNOUNCEMENTS */
+    .announcement-box {
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      border-left: 5px solid #004e92;
+      padding-left: 10px;
+    }
+
+textarea {
+  height: 80px;
+}
+
+  </style>
+
+</head>
+
+<body>
+
+<nav>
+  <a href="home.html">Home</a>
+  <a href="quiz.html">Quiz</a>
+</nav>
+
+<header>
+  <h1>Welcome to Our Class Portal</h1>
+  <p>Learn. Explore. Grow.</p>
+</header>
+
+<div class="container">
+
+  <!-- LEFT: SUBJECTS -->
+  <div class="left">
+    <h2>Subjects</h2>
+
+    <button class="subject-btn" onclick="goToPage('math.html')">Math</button>
+    <button class="subject-btn" onclick="goToPage('science.html')">Science</button>
+    <button class="subject-btn" onclick="goToPage('it.html')">IT</button>
+
+  </div>
+
+  <!-- RIGHT: ANNOUNCEMENTS -->
+  <div class="right">
+    <h2>Announcements</h2>
+
+    <!-- TEACHER INPUT (hidden for students) -->
+    <div id="teacherPanel" style="display:none;">
+      <input type="text" id="title" placeholder="Title" style="width:100%; padding:10px;"><br><br>
+      <textarea id="content" placeholder="Write announcement..." style="width:100%; padding:10px;"></textarea><br><br>
+      <button onclick="postAnnouncement()">Post</button>
+    </div>
+
+    <hr>
+
+    <!-- ANNOUNCEMENT FEED -->
+    <div id="announcementList"></div>
+  </div>
+
+</div>
+
+<script>
+function goToPage(page) {
+  window.location.href = page;
+}
+
+
+// Show teacher panel if teacher
+let role = localStorage.getItem("role");
+if(role === "teacher") {
+  document.getElementById("teacherPanel").style.display = "block";
+}
+
+// Load announcements
+function loadAnnouncements() {
+  let list = document.getElementById("announcementList");
+  list.innerHTML = "";
+
+  let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+
+  announcements.forEach(a => {
+    list.innerHTML += `
+      <div class="announcement-box">
+        <h3>${a.title}</h3>
+        <p>${a.content}</p>
+      </div>
+    `;
+  });
+}
+
+// Post announcement (teacher only)
+function postAnnouncement() {
+  let title = document.getElementById("title").value;
+  let content = document.getElementById("content").value;
+
+  let announcements = JSON.parse(localStorage.getItem("announcements")) || [];
+
+  announcements.unshift({title, content});
+
+  localStorage.setItem("announcements", JSON.stringify(announcements));
+
+  loadAnnouncements();
+}
+
+// Load on start
+loadAnnouncements();
+
+</script>
+
+</body>
+</html>
